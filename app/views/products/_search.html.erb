@@ -3,7 +3,7 @@
     <legend>Search form</legend>
     <div class="form-group">
       <label>Category</label>
-      <%= select_tag 'category_id', options_for_select(@categories.map{|i| ["#{'-' * i.depth} #{i.name}",i.id]}  ),{ class: 'form-control'} %>
+      <%= select_tag 'category_id', options_for_select(@categories.map{|i| ["#{'-' * i.depth} #{i.name}",i.id]}  ),{ class: 'category-select form-control'} %>
     </div>
     <div class="form-group">
       <label>Product name</label>
