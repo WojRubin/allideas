@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<%= @category.name %>
+<% if @category.category_details  %>
+	<% @category.category_details.each do |k,v| %>
+		<tr>
+			<td><%= v["field_name"] %></td>
+			<td><%= v["field_data"] %></td>
+			<td><%= v["field_type"] %></td>
+		<tr>
+	<% end %>
+<% end %>
+
+<%= link_to 'Edit', edit_category_path(@category) %> |
+<%= link_to 'Back', categories_path %>

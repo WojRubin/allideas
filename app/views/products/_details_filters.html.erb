@@ -1,0 +1,60 @@
+<% category = local_assigns[:category ] %>
+<% if category.category_details %>
+  <% category.category_details.each do |k,v| %>
+    <div class="filter-group">
+      <% if v['field_type'] === "text" || v['field_type']  === "textarea" %>
+        <label><%= v['field_name'] %></label>
+        <input type="text" class="tp-text filter-selection" value="<%= v['field_data'] %>" name="q[category_details_<%= k %>_matches_any][]"  data-field="<%= k %>" />
+      <% elsif v['field_type'] === "select" || v['field_type']  === "mulitselect" %>
+        <label><%= v['field_name'] %></label>
+        <ul class="select-list filter-group-more" id="<%= k %>_selection_s">
+          <% @selections &&  @selections[k] && @selections[k].each do |sk| %>
+            <% if sk == "All" %>
+              <li class="tag"><span class="value"><i class="ion-checkmark-circled"></i> <%= sk %></span></li>
+            <% else %>
+              <li class="tag"><span class="value"><i class="ion-checkmark-circled"></i> <%= sk %></span><span data-field="<%= k %>" data-fielddataname="<%= sk %>" class="remove-selection"><i class="ion-close-round"></i></span></li>
+            <% end %>
+          <% end %>
+        </ul>
+        <ul class="select-list">
+          <% v['field_data'].each do |field| %>
+            <li class="li-select-option" data-value="<%= field %>">
+              <div class="flex-option-select">
+                <% if !params[:q] %>
+                  <% if v['field_type'] == 'mulitselect' %>
+                    <input type="checkbox" class="tp-checkbox filter-selection" value="<%= field %>" name="q[category_details_<%= k %>_jqo][]"  data-field="<%= k %>" data-fielddataname="<%= field %>">
+                    <label><%= field %></label>
+                  <% else %>
+                    <input type="checkbox" class="tp-checkbox filter-selection" value="<%= field %>" name="q[category_details_<%= k %>_matches_any][]"  data-field="<%= k %>" data-fielddataname="<%= field %>">
+                    <label><%= field %></label>
+                  <% end %>
+                <% else %>
+                  <% if v['field_type'] == 'mulitselect' %>
+                    <% if params[:q]["category_details_#{k}_jqo"] && params[:q]["category_details_#{k}_jqo"].include?(field) %>
+                      <input type="checkbox" class="tp-checkbox filter-selection" value="<%= field %>" name="q[category_details_<%= k %>_jqo][]"  data-field="<%= k %>" data-fielddataname="<%= field %>" checked>
+                      <label><%= field %></label>
+                    <% else %>
+                      <input type="checkbox" class="tp-checkbox filter-selection" value="<%= field %>" name="q[category_details_<%= k %>_jqo][]"  data-field="<%= k %>" data-fielddataname="<%= field %>">
+                      <label><%= field %></label>
+                    <% end %>
+                  <% else %>
+                    <% if params[:q]["category_details_#{k}_matches_any"] && params[:q]["category_details_#{k}_matches_any"].include?(field) %>
+                      <input type="checkbox" class="tp-checkbox filter-selection" value="<%= field %>" name="q[category_details_<%= k %>_matches_any][]"  data-field="<%= k %>" data-fielddataname="<%= field %>" checked>
+                      <label><%= field %></label>
+                    <% else %>
+                      <input type="checkbox" class="tp-checkbox filter-selection" value="<%= field %>" name="q[category_details_<%= k %>_matches_any][]"  data-field="<%= k %>" data-fielddataname="<%= field %>">
+                      <label><%= field %></label>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      <% elsif v['field_type']  === "checkbox" %>
+        <label><%= v['field_name'] %></label>
+        <input type="checkbox" class="tp-checkbox filter-selection" value="<%= v['field_data'] %>" name="q[category_details_<%= k %>_matches_any][]"  data-field="<%= k %>">
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

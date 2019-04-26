@@ -1,0 +1,65 @@
+<% parent = local_assigns[:parent ] %>
+<div>
+  <% i = 0 %>
+  <% if (parent && parent.category_details && parent.category_details != "null") %>
+    <legend>Details inherited from parent(not for edit)</legend>
+ 		<% parent.category_details.each do |key, value| %>
+      <div id="<%= key %>_field" class="field-data-wrapper">
+        <div class="field-group">
+          <label><%= value["field_type"] %></label>
+          <input name='category[category_details][<%= key %>][field_name]' value="<%= value["field_name"] %>" type="text" class='form-control' readonly />
+        </div>
+        <% if value["field_type"] == "mulitselect" %>
+          <div class="field-group">
+            <input type="checkbox" name='category[category_details][<%= key %>][field_can_select_all]' class='form-control' readonly  value="true" <%= value["field_can_select_all"] == "true" ? "checked" : ""  %>>
+            <label>Can select all?</label>
+          </div>
+        <% end %>
+        <input type='hidden' name='category[category_details][<%= key %>][field_type]' value="<%= value["field_type"] %>" class='form-control'/>
+        <% if value["field_type"] == "select" || value["field_type"] == "mulitselect" %>
+          <div id="<%= key %>_options_wrapper" class='field-data-option-wrapper'>
+            <label>Options</label>
+          <div>
+          <% i = 0 
+          value["field_data"].each do |x| %>
+            <div id="<%= key %>_<%= i %>" class="sortable-field-data">
+              <span class="drag-handler"><i class="ion-android-menu"></i></span>
+              <input name='category[category_details][<%= key %>][field_data][]' class='form-control' readonly value="<%= x %>" />
+            </div>
+          <%  i=i+1
+          end %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+  </br>
+  <% if siblings(parent).any? %>
+    <legend>Details inherited from siblings</legend>
+    <fieldset class="col-md-12">
+      <%= select_tag 'sibling_id', options_for_select(siblings(parent).map{|i| [i.name,i.id]} ) %>
+      <button type='button' class='select-option-add' id='add_sibling_details'>Add details from siblings</button>
+      <div id="sibling_details"></div>
+    </fieldset>
+  <% end %>
+</div>
+<script>
+$("#add_sibling_details").click(function(e){
+  e.preventDefault();
+  GetSiblingDetails();
+});
+function GetSiblingDetails(){
+  var sibling_id = $("#sibling_id").val();
+  if (sibling_id){
+    var ajaxReq = $.ajax('/categories/' + sibling_id, {
+                        dataType: "script",
+                        timeout: 1500,
+                        data: { view: 'get_sibling_details' }
+    });           
+    ajaxReq.error(function (jqXhr, textStatus, errorMessage) {
+        $('p').append('Error: ' + errorMessage);
+    });
+  } else {
+    $("#sibling_details").html("");
+  }
+}
+</script>

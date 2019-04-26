@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<%= @product.name %>
+<% if @product.product_details  %>
+	<% @product.product_details.each do |k,v| %>
+		<tr>
+			<td><%= k.inspect %></td>
+			<td><%= v.inspect %></td>
+		<tr>
+	<% end %>
+<% end %>
+
+<%= link_to 'Edit', edit_product_path(@product) %> |
+<%= link_to 'Back', products_path %>
