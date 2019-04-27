@@ -10,31 +10,37 @@
       </ul>
     </div>
   <% end %>
-  <fieldset class="col-md-6">
-    <legend> Category </legend>
-    <div class="form-group">
-      <%= f.label :name  %>
-      <%= f.text_field :name, class: "form-control" %>
-    </div>
-    <div class="form-group">
-      <%= f.label :parent_id  %>
-      <%= f.select :parent_id, options_for_select(@categories.map{|i| ["#{'-' * i.depth} #{i.name}",i.id]}  ),{ include_blank: "Root"},{ class: 'form-control'} %>
-    </div>
-    <%= render 'categories/category_details', category: category %>
-  </fieldset>
-  <fieldset class="col-md-6">
-    <div id="parent_details"></div>
+  <fieldset class="col-md-12">
+    <fieldset class="col-md-6">
+      <legend> Category </legend>
+      <div class="form-group">
+        <%= f.label :name  %>
+        <%= f.text_field :name, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :parent_id  %>
+        <%= f.select :parent_id, options_for_select(@categories.map{|i| ["#{'-' * i.depth} #{i.name}",i.id]},category.parent && category.parent.id),{},{ class: 'form-control'} %>
+      </div>
+      <%= render 'categories/category_details', category: category %>
+    </fieldset>
+    <fieldset class="col-md-6">
+      <div id="parent_details"></div>
+    </fieldset>
   </fieldset>
   <fieldset class="col-md-12">
     <div class="actions">
-      <%= f.submit "Create", class: "btn btn-primary" %>
+      <%= f.submit %>
     </div>
   </fieldset>
 <% end %>
 
 <script>
 var action_name = "<%= action_name %>";
-  GetParentCategoryDetails();
+  
+  if (!action_name == 'edit'){
+    GetParentCategoryDetails();
+  }
+  
   $("#category_parent_id").on('change',function(e){
   GetParentCategoryDetails();
 });

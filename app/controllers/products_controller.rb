@@ -77,6 +77,14 @@ class ProductsController < ApplicationController
             field = field_p.to_s.tr(?\",?')
             query = "product_details-> '" + k.to_s + "' ?| " + 'array' + field
             products = products.where(query)
+          elsif params[:q] && params[:q]["category_details_#{k}_i_min"] && params[:q]["category_details_#{k}_i_max"] && params[:q]["category_details_#{k}_i_include"]
+            field_min = params[:q]["category_details_#{k}_i_min"].first
+            field_max = params[:q]["category_details_#{k}_i_max"].first
+            products = products.where("(product_details->> '#{k.to_s}')::Integer >= ? AND (product_details->> '#{k.to_s}')::Integer <= ?", field_min.to_i, field_max.to_i)
+          elsif params[:q] && params[:q]["category_details_#{k}_dec_min"] && params[:q]["category_details_#{k}_dec_max"] && params[:q]["category_details_#{k}_dec_include"]
+            field_min = params[:q]["category_details_#{k}_dec_min"].first
+            field_max = params[:q]["category_details_#{k}_dec_max"].first
+            products = products.where("(product_details->> '#{k.to_s}')::Decimal >= ? AND (product_details->> '#{k.to_s}')::Decimal <= ?", field_min.to_d, field_max.to_d)
           end
         end
       end

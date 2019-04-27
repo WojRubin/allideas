@@ -4,34 +4,24 @@
     <label><%= v["field_name"].capitalize %></label>
     <% if v["field_type"] == "text" %>
       <input type="text" name="product[product_details][<%= k %>]" class="form-control" value="<%= @product && @product.product_details ? @product.product_details[k] : nil %>"/>
-    <% elsif v["field_type"] == "textarea" %>
-      <textarea name="product[product_details][<%= k %>]" rows="6" class="form-control"></textarea>
     <% elsif v["field_type"] == "select" %>
       <%= select_tag "product[product_details][#{k}]", options_for_select(v["field_data"], @product && @product.product_details ? @product.product_details[k] : nil),
                 include_blank: true, class: 'form-control' %>
     <% elsif v["field_type"] == "mulitselect" %>
       <%= select_tag "product[product_details][#{k}]", options_for_select(v["field_data"], @product && @product.product_details ? @product.product_details[k] : nil),
-                include_blank: false, multiple: true, class: 'form-control' %>
+                include_blank: false, multiple: true , class: 'form-control' %>
     <% elsif v["field_type"] == "checkbox" %>
       <%= select_tag "product[product_details][#{k}]",  options_for_select([["no", "false"], ["yes", "true"]], @product && @product.product_details ? @product.product_details[k] : nil),include_blank: false, class: 'selectpicker form-control' %>
+    <% elsif v["field_type"] == "integer" || v["field_type"] == "decimal" %>
+      <span>range: <%= v['min'] %>...<%=  v['max'] %></span>
+      <%= number_field_tag "product[product_details][#{k}]", @product && @product.product_details ? @product.product_details[k] : nil , min: v['min'], max: v['max'], class: "form-control", step: (v["field_type"] === 'integer' ? 1 : 0.01) %>
     <% end %>
-    <div class="input-bottom-options">
-      <% if v["field_type"] == "mulitselect" && v["field_can_select_all"] %>
-        <div class="select-all-options-wrapper">
-          <input type="checkbox" value="false" name='<%= "product[product_details][#{k}_selected_all]" %>' class="select-all-options-field-product tp-checkbox" data-fieldid="<%= k %>" <%= @product && @product.product_details && @product.product_details["#{k}_selected_all"] ? 'checked' : nil %>>
-          <label>Select all</label>
-        </div>
-      <% end %>
-    </div>
   </div>
 <% end %>
 
 <script>
 $(document).ready(function() {
-  $(".selectpicker.singleselect").select2()
-  $(".selectpicker.mulitpleselect").select2({
-    closeOnSelect:false
-  })
+  $(".selectpicker.mulitpleselect").selectpicker();
 });
 
 </script>

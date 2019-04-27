@@ -5,7 +5,7 @@
 
   <div class="col-sm-8">
     <h2>Products</h2>          
-    <table class="table table-bordered">
+    <table id="products-table" class="table table-bordered">
       <thead>
         <tr>
           <th>Name</th>
@@ -16,8 +16,8 @@
       <tbody>
         <% @products.each do |product| %>
           <tr>
-            <td><%= product.category.name %></td>
-            <td><%= product.name %></td>
+            <td class="category"><%= product.category.name %></td>
+            <td class="name"><%= product.name %></td>
             <td>
               <%= link_to 'Show', product %>
               <%= link_to 'Edit', edit_product_path(product) %>

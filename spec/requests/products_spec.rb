@@ -25,6 +25,7 @@ describe "products", type: :request do
 	      visit "/products"
 	      select "#{categories[1].name}", from: 'category_id'
 	      click_button("Search")
+	      byebug
 	      expect(page).to have_selector("table tr", count: 2)
 	    end
 	  end

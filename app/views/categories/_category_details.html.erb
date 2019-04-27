@@ -3,18 +3,12 @@
   <% i = 0 %>
   <% if (category.category_details && category.category_details != "null") %>
  		<% category.category_details.each do |key, value| %>
-      <fieldset class="col-md-12">
+      <fieldset class="col-md-12" style="border-top: 1px solid #ccc; padding: 10px; margin: 10px 0;">
         <div id="<%= key %>_field" class="field-data-wrapper">
-          <div class='field-type-text form-group'><%= value["field_type"] %></div>
+          <div class='field-type-text form-group'><label>Field type: <%= value["field_type"] %></label></div>
             <label>Field name</label>
             <input name='category[category_details][<%= key %>][field_name]' value="<%= value["field_name"] %>" type="text" class="form-control" />
           <div>
-          <% if value["field_type"] == "mulitselect" %>
-            <div class="form-group">
-              <input type="checkbox" name='category[category_details][<%= key %>][field_can_select_all]' class='form-control' value="true" <%= value["field_can_select_all"] == "true" ? "checked" : "" %>>
-              <label>Can select all?</label><br/>
-            </div>
-          <% end %>
           <input type='hidden' name='category[category_details][<%= key %>][field_type]' value="<%= value["field_type"] %>" />
           <% if value["field_type"] == "select" || value["field_type"] == "mulitselect" %>
             <div id="<%= key %>_options_wrapper" class='field-data-option-wrapper'>
@@ -31,6 +25,11 @@
             end %>
             <button type='button' class='select-option-add' data-id="<%= key %>">Add new option</button>
           <% end %>
+          <% if value["field_type"] == "integer" || value["field_type"] == "decimal" %>
+            <label>Min</label><br/><input name='category[category_details][<%= key %>][min]' type='number' class='form-control' value="<%= value["min"] %>" step="<%= value["field_type"] == 'integer' ? 1 : 0.01 %>" />
+            <label>Max</label><br/><input name='category[category_details][<%= key %>][max]' type='number' class='form-control' value="<%= value["max"] %>" step="<%= value["field_type"] == 'integer' ? 1 : 0.01 %>" />
+          <% end %>
+          </br>
           <button type='button' data-id="<%= key %>_field" class='gs-field-remove btn-blue-text'>Remove Field</button>
         </div>
       </fieldset>
@@ -40,10 +39,11 @@
 <div>
   <select id="add_category_details_field_type_select" class="select-input">
     <option value="text">Text</option>
-    <option value="textarea">Textarea</option>
     <option value="select">Select</option>
     <option value="mulitselect">Multi-Select</option>
     <option value="checkbox">Checkbox</option>
+    <option value="integer">Integer</option>
+    <option value="decimal">Decimal</option>
   </select>
   <button id="add_category_detail_field" type="button">Add new Field</button>
 </div>
@@ -60,9 +60,6 @@
       case "text":
         elem = generateBasicField(mSec, type,'category_details');
         break;
-      case "textarea":
-        elem = generateBasicField(mSec, type,'category_details');
-        break;
       case "select":
         elem = generateSelectField(mSec, type,'category_details');
         break;
@@ -72,6 +69,10 @@
       case "checkbox":
         elem = generateBasicField(mSec, type,'category_details');
         break;
+      case "integer":
+      case "decimal":
+        elem = generateIntegerField(mSec, type,'category_details');
+        break;
       default:
         elem = generateBasicField(mSec, type,'category_details');
         break;
@@ -80,21 +81,10 @@
     $("#category_details-wrapper").append(elem);
   })
 
-  function generateTooltipAndSelectAll(mSec, type, dataType) {
-    // If mulitselect filed, add checkbox with "Can select all"
-    elem = ""
-    if(type === "mulitselect") {
-      elem = elem + "<br/><div><input type='checkbox' name='category["+dataType+"]["+mSec+"][field_can_select_all]' value='true'><label class='label'>Can select all?</label></div>"
-    }
-    return elem
-  }
-
   function generateBasicField(mSec, type, dataType) {
     var elem = "<div id='"+mSec+"_field' class='field-group'><div class='field-type-text'>"+type+"</div>"
     elem = elem + "<label>Field name</label><br/><input name='category["+dataType+"]["+mSec+"][field_name]' type='text' class='form-control' />"
     elem = elem + "<input type='hidden' name='category["+dataType+"]["+mSec+"][field_type]' type='text' value='"+type+"' />"
-    elem = elem + "<input type='text' name='category["+dataType+"]["+mSec+"][field_type]' type='text' value='"+type+"' class='form-control' />"
-    elem = elem + generateTooltipAndSelectAll(mSec, type, dataType);
     elem = elem + "<br/><br/><button type='button' data-id='"+mSec+"_field' class='gs-field-remove btn-blue-text'>Remove Field</button>"
     elem = elem + "</div>"
     return elem
@@ -107,11 +97,23 @@
     var elem = "<div id='"+mSec+"_field' class='field-group'><div class='field-type-text'>"+type+"</div>"
     elem = elem + "<label>Field name</label><br/><input name='category["+dataType+"]["+mSec+"][field_name]' type='text' class='form-control' /><br/>"
     elem = elem + "<input type='hidden' name='category["+dataType+"]["+mSec+"][field_type]' value='"+type+"' />"
-    elem = elem + generateTooltipAndSelectAll(mSec, type, dataType);
     elem = elem + "<div id='"+id_id+"_options_wrapper' class='field-data-option-wrapper'><label class='label'>Field Data</label>"
     elem = elem + "<div id="+mSec+"_"+localMSec+"><input class='form-input-tp' name='category["+dataType+"]["+mSec+"][field_data][]' /><button type='button' class='select-option-remove btn-blue-text' data-id="+mSec+"_"+localMSec+">Remove option</button><br/></div></div>"
     elem = elem + "<button type='button' class='select-option-add' data-id="+id_id+">Add new option</button>"
     elem = elem + "<button type='button' data-id='"+mSec+"_field' class='gs-field-remove btn-blue-text'>Remove Field</button>"
+    elem = elem + "</div>"
+    return elem
+  }
+
+  function generateIntegerField(mSec, type, dataType) {
+    if (type == 'integer'){ var step = 1; } else { step = 0.01; }
+    var elem = "<div id='"+mSec+"_field' class='field-group'><div class='field-type-text'>"+type+"</div>"
+    elem = elem + "<label>Field name</label><br/><input name='category["+dataType+"]["+mSec+"][field_name]' type='text' class='form-control' />"
+    elem = elem + "<input type='hidden' name='category["+dataType+"]["+mSec+"][field_type]' type='text' value='"+type+"' />"
+    elem = elem + "<label>Min</label><br/><input name='category["+dataType+"]["+mSec+"][min]' type='number' class='form-control' step='" + step + "' />"
+    elem = elem + "<label>Max</label><br/><input name='category["+dataType+"]["+mSec+"][max]' type='number' class='form-control' step ='"+step+"' />"
+
+    elem = elem + "<br/><br/><button type='button' data-id='"+mSec+"_field' class='gs-field-remove btn-blue-text'>Remove Field</button>"
     elem = elem + "</div>"
     return elem
   }

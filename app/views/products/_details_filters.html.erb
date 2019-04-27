@@ -54,6 +54,24 @@
       <% elsif v['field_type']  === "checkbox" %>
         <label><%= v['field_name'] %></label>
         <input type="checkbox" class="tp-checkbox filter-selection" value="<%= v['field_data'] %>" name="q[category_details_<%= k %>_matches_any][]"  data-field="<%= k %>">
+      <% elsif v['field_type'] === "integer" %>
+        <label><%= v['field_name'] %></label></br>
+        <div class="range-wraper">
+          <%= check_box_tag "q[category_details_#{k}_i_include][]", "no" %>
+          <div class="integer-min">&nbsp from:&nbsp</div>
+          <input type="number" id="integer-min-range" class="tp-range filter-selection form-control" value="<%= v['min'] %>" name="q[category_details_<%= k %>_i_min][]" data-field="<%= k %>" min='<%= v['min'] %>' max='<%= v['max'] %>' step="1" />
+          <div class="integer-max">&nbsp  to: &nbsp</div>
+          <input type="number" id="integer-max-range" class="tp-range filter-selection form-control" value="<%= v['max'] %>" name="q[category_details_<%= k %>_i_max][]" data-field="<%= k %>" min='<%= v['min'] %>' max='<%= v['max'] %>' step="1" />
+      <% elsif v['field_type']  === "decimal" %>
+        <label><%= v['field_name'] %></label></br>
+        <div class="range-wraper">
+          <%= check_box_tag "q[category_details_#{k}_dec_include][]", "no" %>
+          <div class="integer-min">&nbsp from:&nbsp</div>
+          <input type="number" id="integer-min-range" class="tp-range filter-selection form-control" value="<%= v['min'] %>" name="q[category_details_<%= k %>_dec_min][]" data-field="<%= k %>" min='<%= v['min'] %>' max='<%= v['max'] %>' step="0.01" />
+          <div class="integer-max">&nbsp  to: &nbsp</div>
+          <input type="number" id="integer-max-range" class="tp-range filter-selection form-control" value="<%= v['max'] %>" name="q[category_details_<%= k %>_dec_max][]" data-field="<%= k %>" min='<%= v['min'] %>' max='<%= v['max'] %>' step="0.01" />
+        </div>
+        </br>
       <% end %>
     </div>
   <% end %>
