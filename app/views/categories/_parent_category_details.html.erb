@@ -3,7 +3,7 @@
   <% i = 0 %>
   <% if (parent && parent.category_details && parent.category_details != "null") %>
     <legend>Details inherited from parent(not for edit)</legend>
- 		<% parent.category_details.each do |key, value| %>
+      <% parent.category_details.each do |key, value| %>
       <div id="<%= key %>_field" class="field-data-wrapper">
         <div class="field-group">
           <label><%= value["field_type"] %></label>
