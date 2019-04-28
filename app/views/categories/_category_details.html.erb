@@ -1,33 +1,19 @@
 <% category = local_assigns[:category ] %>
-<div id="category_details-wrapper">
+<% siblings = local_assigns[:siblings ] %>
+<% siblings ? category_id = 'siblings_category' : category_id = 'category'%>
+<div id='<%= category_id %>_details-wrapper'>
   <% i = 0 %>
   <% if (category.category_details && category.category_details != "null") %>
  		<% category.category_details.each do |key, value| %>
-      <fieldset class="col-md-12" style="border-top: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+      <fieldset class="col-md-12 category-details-fieldset" >
         <div id="<%= key %>_field" class="field-data-wrapper">
-          <div class='field-type-text form-group'><label>Field type: <%= value["field_type"] %></label></div>
-            <label>Field name</label>
-            <input name='category[category_details][<%= key %>][field_name]' value="<%= value["field_name"] %>" type="text" class="form-control" />
-          <div>
-          <input type='hidden' name='category[category_details][<%= key %>][field_type]' value="<%= value["field_type"] %>" />
+          <%= helper_field_type_text(key,value).html_safe %>
+          <%= helper_field_type_hidden( key, value ).html_safe %>
           <% if value["field_type"] == "select" || value["field_type"] == "mulitselect" %>
-            <div id="<%= key %>_options_wrapper" class='field-data-option-wrapper'>
-              <label>Options</label><br/>
-            <div>
-            <% i = 0 
-            value["field_data"].each do |x| %>
-            <div id="<%= key %>_<%= i %>">
-              <span class="drag-handler"><i class="ion-android-menu"></i></span>
-              <input name='category[category_details][<%= key %>][field_data][]' class='form-input-tp' value="<%= x %>" />
-              <button type='button' class=' select-option-remove btn-blue-text' data-id="<%= key %>_<%= i %>">Remove option</button>
-            </div>
-            <%  i = i+1
-            end %>
-            <button type='button' class='select-option-add' data-id="<%= key %>">Add new option</button>
+           <%= helper_field_type_select(key,value,i).html_safe %>
           <% end %>
           <% if value["field_type"] == "integer" || value["field_type"] == "decimal" %>
-            <label>Min</label><br/><input name='category[category_details][<%= key %>][min]' type='number' class='form-control' value="<%= value["min"] %>" step="<%= value["field_type"] == 'integer' ? 1 : 0.01 %>" />
-            <label>Max</label><br/><input name='category[category_details][<%= key %>][max]' type='number' class='form-control' value="<%= value["max"] %>" step="<%= value["field_type"] == 'integer' ? 1 : 0.01 %>" />
+            <%= helper_field_type_integer(key,value).html_safe %>
           <% end %>
           </br>
           <button type='button' data-id="<%= key %>_field" class='gs-field-remove btn-blue-text'>Remove Field</button>
@@ -37,105 +23,113 @@
   <% end %>
 </div>
 <div>
-  <select id="add_category_details_field_type_select" class="select-input">
-    <option value="text">Text</option>
-    <option value="select">Select</option>
-    <option value="mulitselect">Multi-Select</option>
-    <option value="checkbox">Checkbox</option>
-    <option value="integer">Integer</option>
-    <option value="decimal">Decimal</option>
-  </select>
-  <button id="add_category_detail_field" type="button">Add new Field</button>
+  <% if !siblings %>
+    <%= helper_select_options.html_safe %>
+    <button id='add_category_detail_field' type='button'>Add new Field</button>
+  <% end %>
 </div>
 
 <script>
+var siblings = ("<%= siblings %>");
+console.log(siblings);
+if (siblings){ 
+  category_id = 'siblings_category';
+} else { 
+  category_id = 'category';
+  addCategoryDetailField();
+}
+
+
+function addCategoryDetailField(){
   $('#add_category_detail_field').on('click', function(e) {
-    // e.preventDefault();
-    var type = $("#add_category_details_field_type_select").val()
-    var date = new Date();
-    var mSec = date.getTime();
-    var elem = null
+  e.preventDefault();
+  var type = $("#add_category_details_field_type_select").val()
+  var date = new Date();
+  var mSec = date.getTime();
+  var elem = null
 
-    switch(type) {
-      case "text":
-        elem = generateBasicField(mSec, type,'category_details');
-        break;
-      case "select":
-        elem = generateSelectField(mSec, type,'category_details');
-        break;
-      case "mulitselect":
-        elem = generateSelectField(mSec, type,'category_details');
-        break;
-      case "checkbox":
-        elem = generateBasicField(mSec, type,'category_details');
-        break;
-      case "integer":
-      case "decimal":
-        elem = generateIntegerField(mSec, type,'category_details');
-        break;
-      default:
-        elem = generateBasicField(mSec, type,'category_details');
-        break;
-    }
-
-    $("#category_details-wrapper").append(elem);
-  })
-
-  function generateBasicField(mSec, type, dataType) {
-    var elem = "<div id='"+mSec+"_field' class='field-group'><div class='field-type-text'>"+type+"</div>"
-    elem = elem + "<label>Field name</label><br/><input name='category["+dataType+"]["+mSec+"][field_name]' type='text' class='form-control' />"
-    elem = elem + "<input type='hidden' name='category["+dataType+"]["+mSec+"][field_type]' type='text' value='"+type+"' />"
-    elem = elem + "<br/><br/><button type='button' data-id='"+mSec+"_field' class='gs-field-remove btn-blue-text'>Remove Field</button>"
-    elem = elem + "</div>"
-    return elem
+  switch(type) {
+    case "text":
+      elem = generateBasicField(mSec, type,'category_details');
+      break;
+    case "select":
+      elem = generateSelectField(mSec, type,'category_details');
+      break;
+    case "mulitselect":
+      elem = generateSelectField(mSec, type,'category_details');
+      break;
+    case "checkbox":
+      elem = generateBasicField(mSec, type,'category_details');
+      break;
+    case "integer":
+    case "decimal":
+      elem = generateIntegerField(mSec, type,'category_details');
+      break;
+    default:
+      elem = generateBasicField(mSec, type,'category_details');
+      break;
   }
 
-  function generateSelectField(mSec, type, dataType) {
-    const id_id = mSec
-    var date = new Date();
-    var localMSec = date.getTime();
-    var elem = "<div id='"+mSec+"_field' class='field-group'><div class='field-type-text'>"+type+"</div>"
-    elem = elem + "<label>Field name</label><br/><input name='category["+dataType+"]["+mSec+"][field_name]' type='text' class='form-control' /><br/>"
-    elem = elem + "<input type='hidden' name='category["+dataType+"]["+mSec+"][field_type]' value='"+type+"' />"
-    elem = elem + "<div id='"+id_id+"_options_wrapper' class='field-data-option-wrapper'><label class='label'>Field Data</label>"
-    elem = elem + "<div id="+mSec+"_"+localMSec+"><input class='form-input-tp' name='category["+dataType+"]["+mSec+"][field_data][]' /><button type='button' class='select-option-remove btn-blue-text' data-id="+mSec+"_"+localMSec+">Remove option</button><br/></div></div>"
-    elem = elem + "<button type='button' class='select-option-add' data-id="+id_id+">Add new option</button>"
-    elem = elem + "<button type='button' data-id='"+mSec+"_field' class='gs-field-remove btn-blue-text'>Remove Field</button>"
-    elem = elem + "</div>"
-    return elem
-  }
+  $("#category_details-wrapper").append(elem);
+})
+}
 
-  function generateIntegerField(mSec, type, dataType) {
-    if (type == 'integer'){ var step = 1; } else { step = 0.01; }
-    var elem = "<div id='"+mSec+"_field' class='field-group'><div class='field-type-text'>"+type+"</div>"
-    elem = elem + "<label>Field name</label><br/><input name='category["+dataType+"]["+mSec+"][field_name]' type='text' class='form-control' />"
-    elem = elem + "<input type='hidden' name='category["+dataType+"]["+mSec+"][field_type]' type='text' value='"+type+"' />"
-    elem = elem + "<label>Min</label><br/><input name='category["+dataType+"]["+mSec+"][min]' type='number' class='form-control' step='" + step + "' />"
-    elem = elem + "<label>Max</label><br/><input name='category["+dataType+"]["+mSec+"][max]' type='number' class='form-control' step ='"+step+"' />"
+function generateBasicField(mSec, type, dataType) {
+  var elem = "<div id='"+mSec+"_field' class='field-group'><div class='field-type-text'>"+type+"</div>"
+  elem = elem + "<label>Field name</label><br/><input name='category["+dataType+"]["+mSec+"][field_name]' type='text' class='form-control' />"
+  elem = elem + "<input type='hidden' name='category["+dataType+"]["+mSec+"][field_type]' type='text' value='"+type+"' />"
+  elem = elem + "<br/><br/><button type='button' data-id='"+mSec+"_field' class='gs-field-remove btn-blue-text'>Remove Field</button>"
+  elem = elem + "</div>"
+  return elem
+}
 
-    elem = elem + "<br/><br/><button type='button' data-id='"+mSec+"_field' class='gs-field-remove btn-blue-text'>Remove Field</button>"
-    elem = elem + "</div>"
-    return elem
-  }
+function generateSelectField(mSec, type, dataType) {
+  const id_id = mSec
+  var date = new Date();
+  var localMSec = date.getTime();
+  var elem = "<div id='"+mSec+"_field' class='field-group'><div class='field-type-text'>"+type+"</div>"
+  elem = elem + "<label>Field name</label><br/><input name='category["+dataType+"]["+mSec+"][field_name]' type='text' class='form-control' /><br/>"
+  elem = elem + "<input type='hidden' name='category["+dataType+"]["+mSec+"][field_type]' value='"+type+"' />"
+  elem = elem + "<div id='"+id_id+"_options_wrapper' class='field-data-option-wrapper'><label class='label'>Field Data</label>"
+  elem = elem + "<div id="+mSec+"_"+localMSec+"><input class='form-input-tp' name='category["+dataType+"]["+mSec+"][field_data][]' /><button type='button' class='select-option-remove btn-blue-text' data-id="+mSec+"_"+localMSec+">Remove option</button><br/></div></div>"
+  elem = elem + "<button type='button' class='select-option-add' data-id="+id_id+">Add new option</button>"
+  elem = elem + "<button type='button' data-id='"+mSec+"_field' class='gs-field-remove btn-blue-text'>Remove Field</button>"
+  elem = elem + "</div>"
+  return elem
+}
 
-  $('#category_details-wrapper').on('click', '.select-option-add', function(e) {
-    e.preventDefault();
-    var elId = $(this).data('id');
-    var date = new Date();
-    var mSec = date.getTime();
-    var slot = $('#category_details-wrapper #'+elId+'_options_wrapper');
-    slot.append("<div id="+mSec+"_"+mSec+"><input class='form-input-tp' name='category[category_details]["+elId+"][field_data][]' /><button type='button' class='select-option-remove btn-blue-text' data-id="+mSec+"_"+mSec+">Remove option</button><br/></div>");
-  });
+function generateIntegerField(mSec, type, dataType) {
+  if (type == 'integer'){ var step = 1; } else { step = 0.01; }
+  var elem = "<div id='"+mSec+"_field' class='field-group'><div class='field-type-text'>"+type+"</div>"
+  elem = elem + "<label>Field name</label><br/><input name='category["+dataType+"]["+mSec+"][field_name]' type='text' class='form-control' />"
+  elem = elem + "<input type='hidden' name='category["+dataType+"]["+mSec+"][field_type]' type='text' value='"+type+"' />"
+  elem = elem + "<label>Min</label><br/><input name='category["+dataType+"]["+mSec+"][min]' type='number' class='form-control' step='" + step + "' />"
+  elem = elem + "<label>Max</label><br/><input name='category["+dataType+"]["+mSec+"][max]' type='number' class='form-control' step ='"+step+"' />"
 
-  $('#category_details-wrapper').on('click', '.select-option-remove', function(e) {
-    e.preventDefault();
-    var elId = $(this).data('id');
-    $('#category_details-wrapper #'+elId).remove();
-  });
+  elem = elem + "<br/><br/><button type='button' data-id='"+mSec+"_field' class='gs-field-remove btn-blue-text'>Remove Field</button>"
+  elem = elem + "</div>"
+  return elem
+}
 
-  $('#category_details-wrapper').on('click', '.gs-field-remove', function(e) {
-    e.preventDefault();
-    var elId = $(this).data('id');
-    $('#category_details-wrapper #'+elId).remove();
-  });
+$('#'+category_id+'_details-wrapper').on('click', '.select-option-add', function(e) {
+  console.log('click');
+  e.preventDefault();
+  var elId = $(this).data('id');
+  var date = new Date();
+  var mSec = date.getTime();
+  var slot = $('#'+category_id+'_details-wrapper #'+elId+'_options_wrapper');
+  slot.append("<div id="+mSec+"_"+mSec+"><input class='form-input-tp' name='category[category_details]["+elId+"][field_data][]' /><button type='button' class='select-option-remove btn-blue-text' data-id="+mSec+"_"+mSec+">Remove option</button><br/></div>");
+});
+
+$('#'+category_id+'_details-wrapper').on('click', '.select-option-remove', function(e) {
+  e.preventDefault();
+  var elId = $(this).data('id');
+  $('#'+category_id+'_details-wrapper #'+elId).remove();
+});
+
+$('#'+category_id+'_details-wrapper').on('click', '.gs-field-remove', function(e) {
+  e.preventDefault();
+  var elId = $(this).data('id');
+  $('#'+category_id+'_details-wrapper #'+elId).remove();
+});
 </script>

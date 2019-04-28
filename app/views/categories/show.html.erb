@@ -5,34 +5,33 @@
 </br>
 <% if @category.category_details  %>
 	<table id="product-show-table" class="table table-striped ">
-	  <thead>
-	    <tr>
-	      <th scope="col">#</th>
-	      <th scope="col">Field name</th>
-	      <th scope="col">Field type/option</th>
-	    </tr>
-	  </thead>
-	  
-	  <tbody>
-	  	<% @category.category_details.each_with_index do |(k,v), index | %>
-	    	<tr>
-		      <th scope="row"><%= index + 1 %></th>
-		      <td><%= v["field_name"] %></td>
-		      <td>
-		      	<% if v["field_type"] == 'select' %>
-			      	<% v["field_data"].each do |data| %>
-			      		<li><%= data %></li>
-			    		<% end %>
-			    	<% elsif v["field_type"] == 'integer' %>
-			    		Min: <%= v["min"] %>
-			    		Max: <%= v["max"] %>
-			    	<% else %>
-			    		<p>type: <%= v["field_type"] %></p>
-			    	<% end%>
-		   		</td>
-	    	</tr>
-	    <% end %>
-	  </tbody>
+		<thead>
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Field name</th>
+				<th scope="col">Field type/option</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @category.category_details.each_with_index do |(k,v), index | %>
+				<tr>
+					<th scope="row"><%= index + 1 %></th>
+					<td><%= v["field_name"] %></td>
+					<td>
+						<% if v["field_type"] == 'select' %>
+							<% v["field_data"].each do |data| %>
+								<li><%= data %></li>
+							<% end %>
+						<% elsif v["field_type"] == 'integer' || v["field_type"] == 'decimal' %>
+							Min: <%= v["min"] %>
+							Max: <%= v["max"] %>
+						<% else %>
+							<p>type: <%= v["field_type"] %></p>
+						<% end %>
+					</td>
+				</tr>
+			<% end %>
+		</tbody>
 	</table>
 <% end %>
 

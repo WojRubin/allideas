@@ -1,15 +1,7 @@
 <% category = local_assigns[:category ] %>
 <%= form_with(model: category, local: true) do |f| %>
-  <% if category.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(category.errors.count, "error") %> prohibited this category from being saved:</h2>
-      <ul>
-      <% category.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= errors_for category %>
+  
   <fieldset class="col-md-12">
     <fieldset class="col-md-6">
       <legend> Category </legend>
@@ -19,7 +11,7 @@
       </div>
       <div class="form-group">
         <%= f.label :parent_id  %>
-        <%= f.select :parent_id, options_for_select(@categories.map{|i| ["#{'-' * i.depth} #{i.name}",i.id]},category.parent && category.parent.id),{},{ class: 'form-control'} %>
+        <%= f.select :parent_id, options_for_select(@categories.map{|i| ["#{'-' * i.depth} #{i.name}",i.id]},category.parent && category.parent.id), { include_blank: 'root' },{ class: 'form-control'} %>
       </div>
       <%= render 'categories/category_details', category: category %>
     </fieldset>
@@ -38,14 +30,14 @@
 var action_name = "<%= action_name %>";
   
   if (!action_name == 'edit'){
-    GetParentCategoryDetails();
+    getParentCategoryDetails();
   }
   
   $("#category_parent_id").on('change',function(e){
-  GetParentCategoryDetails();
+  getParentCategoryDetails();
 });
 
-function GetParentCategoryDetails(){
+function getParentCategoryDetails(){
   var parent_id = $("#category_parent_id").val();
   if (parent_id){
     var ajaxReq = $.ajax('/categories/' + parent_id, {

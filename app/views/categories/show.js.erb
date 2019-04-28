@@ -1,16 +1,16 @@
 switch("<%= @view_name %>") {
-  case "details_filter":
-   	DetailsFilter();
-    break;
-  case "get_parent_details":
-    GetParentDetails();
-    break;
-  case "product_category_details":
-    ProductCategoryDetails();
-    break;
-  case "get_sibling_details":
-    GetSiblingDetails();
-    break;
+	case "details_filter":
+		DetailsFilter();
+		break;
+	case "get_parent_details":
+		GetParentDetails();
+		break;
+	case "product_category_details":
+		ProductCategoryDetails();
+		break;
+	case "get_sibling_details":
+		GetSiblingDetails();
+		break;
 }
 
 function DetailsFilter(){
@@ -27,5 +27,5 @@ function ProductCategoryDetails(){
 }
 function GetSiblingDetails(){
 	$("#sibling_details").html("");
-	$("#sibling_details").append("<%= escape_javascript render(:partial => 'categories/category_details', locals: { category: @category }) %>");
+	$("#sibling_details").append("<%= escape_javascript render(:partial => 'categories/category_details', locals: { category: @category, siblings: 'true' }) %>");
 }
