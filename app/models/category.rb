@@ -6,7 +6,7 @@ class Category < ActiveRecord::Base
   serialize :category_details
 
   def self.siblings parent
-		siblings = self.where("lft > ? AND rgt < ? AND depth = ?", parent.lft, parent.rgt, (parent.depth + 1))
-		return siblings
-	end
+    siblings = self.where("lft > ? AND rgt < ? AND depth = ?", parent.lft, parent.rgt, (parent.depth + 1))
+    return siblings
+  end
 end

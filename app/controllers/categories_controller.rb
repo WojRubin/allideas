@@ -73,16 +73,17 @@ class CategoriesController < ApplicationController
   end
 
   private
-    def get_categories
-      @categories = Category.all.select(:name,:id,:depth).order(:lft)
-    end
-    # Use callbacks to share common setup or constraints between actions.
-    def set_category
-      @category = Category.find(params[:id])
-    end
+  
+  def get_categories
+    @categories = Category.all.select(:name,:id,:depth).order(:lft)
+  end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_category
+    @category = Category.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def category_params
-      params.require(:category).permit(:name, :parent_id, :lft, :rgt, :depth, :children_count, category_details: {})
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def category_params
+    params.require(:category).permit(:name, :parent_id, :lft, :rgt, :depth, :children_count, category_details: {})
+  end
 end

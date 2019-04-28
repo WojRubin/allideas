@@ -15,21 +15,21 @@
 <% end %>
 
 <script>
-GetDetails();
+getDetails();
 $("#category_id").on('change',function(e){
-	GetDetails();
+  getDetails();
 });
 
-function GetDetails(){
-	var category_id = $("#category_id").val();
-	var ajaxReq = $.ajax('/categories/' + category_id, {
+function getDetails(){
+  var category_id = $("#category_id").val();
+  var ajaxReq = $.ajax('/categories/' + category_id, {
                         dataType: "script",
                         timeout: 1500,
                         data: { view: 'details_filter' }
- 											});
-               
+                      });
+
     ajaxReq.error(function (jqXhr, textStatus, errorMessage) {
-        $('p').append('Error: ' + errorMessage);
+      $('p').append('Error: ' + errorMessage);
     });
 }
 </script>

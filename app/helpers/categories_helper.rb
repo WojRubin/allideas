@@ -44,5 +44,5 @@ module CategoriesHelper
       <option value='integer'>Integer</option>
       <option value='decimal'>Decimal</option>
     </select>"
-	end
+  end
 end

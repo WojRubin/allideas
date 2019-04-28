@@ -1,31 +1,31 @@
 switch("<%= @view_name %>") {
-	case "details_filter":
-		DetailsFilter();
-		break;
-	case "get_parent_details":
-		GetParentDetails();
-		break;
-	case "product_category_details":
-		ProductCategoryDetails();
-		break;
-	case "get_sibling_details":
-		GetSiblingDetails();
-		break;
+  case "details_filter":
+    DetailsFilter();
+    break;
+  case "get_parent_details":
+    GetParentDetails();
+    break;
+  case "product_category_details":
+    ProductCategoryDetails();
+    break;
+  case "get_sibling_details":
+    GetSiblingDetails();
+    break;
 }
 
 function DetailsFilter(){
-	$("#details_filters").html("");
-	$("#details_filters").append("<%= escape_javascript render(:partial => 'products/details_filters', locals: { category: @category }) %>");
+  $("#details_filters").html("");
+  $("#details_filters").append("<%= escape_javascript render(:partial => 'products/details_filters', locals: { category: @category }) %>");
 }
 function GetParentDetails(){
-	$("#parent_details").html("");
-	$("#parent_details").append("<%= escape_javascript render(:partial => 'categories/parent_category_details', locals: { parent: @category }) %>");
+  $("#parent_details").html("");
+  $("#parent_details").append("<%= escape_javascript render(:partial => 'categories/parent_category_details', locals: { parent: @category }) %>");
 }
 function ProductCategoryDetails(){
-	$("#category_details").html("");
-	$("#category_details").append("<%= escape_javascript render(:partial => 'products/product_category_details', locals: { category: @category }) %>");
+  $("#category_details").html("");
+  $("#category_details").append("<%= escape_javascript render(:partial => 'products/product_category_details', locals: { category: @category }) %>");
 }
 function GetSiblingDetails(){
-	$("#sibling_details").html("");
-	$("#sibling_details").append("<%= escape_javascript render(:partial => 'categories/category_details', locals: { category: @category, siblings: 'true' }) %>");
+  $("#sibling_details").html("");
+  $("#sibling_details").append("<%= escape_javascript render(:partial => 'categories/category_details', locals: { category: @category, siblings: 'true' }) %>");
 }
