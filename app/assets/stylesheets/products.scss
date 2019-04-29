@@ -2,25 +2,29 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 #product-show-table{
-	text-align: left;
+  text-align: left;
 }
 #products-table{
-	td.category,td.name{
-		text-align: left;
-	}
-	th{
-		text-align: center;
-	}
+  td.category,td.name{
+    text-align: left;
+  }
+  th{
+    text-align: center;
+  }
 }
 #integer-min-range, #integer-max-range{
-	width: 100px;
+  width: 100px;
 }
 .range-wraper{
-	 display: -webkit-flex; /* Safari */
+  display: -webkit-flex; /* Safari */
   -webkit-flex-direction: row-reverse; /* Safari 6.1+ */
   display: flex;
   flex-direction: row;
-	.integer-min, .integer-max {
-		line-height: 2;
-	}
+  margin: 3px 0;
+  .integer-min, .integer-max {
+    line-height: 2;
+  }
+}
+.filter-group{
+  margin: 15px 0;
 }

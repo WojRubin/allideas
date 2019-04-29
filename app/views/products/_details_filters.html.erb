@@ -4,7 +4,7 @@
     <div class="filter-group">
       <% if v['field_type'] === "text" || v['field_type']  === "textarea" %>
         <label><%= v['field_name'] %></label>
-        <input type="text" class="tp-text filter-selection" value="<%= v['field_data'] %>" name="q[category_details_<%= k %>_matches_any][]"  data-field="<%= k %>" />
+        <input type="text" class="tp-text filter-selection form-control" value="<%= v['field_data'] %>" name="q[category_details_<%= k %>_text][]"  data-field="<%= k %>" />
       <% elsif v['field_type'] === "select" || v['field_type']  === "mulitselect" %>
         <label><%= v['field_name'] %></label>
         <ul class="select-list filter-group-more" id="<%= k %>_selection_s">

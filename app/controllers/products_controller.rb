@@ -75,8 +75,7 @@ class ProductsController < ApplicationController
           if params[:q] && params[:q]["category_details_#{k}_matches_any"] && !params[:q]["category_details_#{k}_matches_any"].first.empty?
             field_p = params[:q]["category_details_#{k}_matches_any"]
             field = field_p.to_s.tr(?\",?')
-            query = "product_details-> '" + k.to_s + "' ?| " + 'array' + field
-            products = products.where(query)
+            products = products.where("product_details-> '" + k.to_s + "' ?| " + 'array' + field)
           elsif params[:q] && params[:q]["category_details_#{k}_i_min"] && params[:q]["category_details_#{k}_i_max"] && params[:q]["category_details_#{k}_i_include"]
             field_min = params[:q]["category_details_#{k}_i_min"].first
             field_max = params[:q]["category_details_#{k}_i_max"].first
@@ -85,6 +84,10 @@ class ProductsController < ApplicationController
             field_min = params[:q]["category_details_#{k}_dec_min"].first
             field_max = params[:q]["category_details_#{k}_dec_max"].first
             products = products.where("(product_details->> '#{k.to_s}')::Decimal >= ? AND (product_details->> '#{k.to_s}')::Decimal <= ?", field_min.to_d, field_max.to_d)
+          elsif params[:q] && params[:q]["category_details_#{k}_text"] && !params[:q]["category_details_#{k}_text"].first.empty?
+            field_p = params[:q]["category_details_#{k}_text"].first
+            field = field_p.to_s.tr(?\",?')
+            products = products.where("product_details->> '" + k.to_s + "' LIKE ?", "%#{field}%")
           end
         end
       end
